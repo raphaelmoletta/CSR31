@@ -1,17 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.edu.utfpr.daeln.csr31.chat4dpam5.gui;
 
 import br.edu.utfpr.daeln.csr31.chat4dpam5.Chat;
 import br.edu.utfpr.daeln.csr31.chat4dpam5.beans.Message;
+import br.edu.utfpr.daeln.csr31.chat4dpam5.beans.RemoteMessage;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Toolkit;
-import java.time.format.DateTimeFormatter;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -21,15 +15,17 @@ import javax.swing.border.LineBorder;
  *
  * @author rapha
  */
-public class MainView extends javax.swing.JFrame {
+public final class MainView extends javax.swing.JFrame {
     private static final long serialVersionUID = -6467255376560618319L;
     private int count = 0;
     private JPanel panel = null;
+    private Chat chat;
     /**
      * Creates new form MainView
      */
     public MainView() {
         initComponents();
+        chat = new Chat(this);
         chatPanel.setPreferredSize(new Dimension(100, 100));
         chatPanel.setAlignmentX(LEFT_ALIGNMENT);
         panel = (JPanel)chatPanel.getViewport().getView();
@@ -40,6 +36,7 @@ public class MainView extends javax.swing.JFrame {
         this.chatPanel.setViewportBorder(new LineBorder(Color.BLACK));
         this.setTitle("D4-Pam5 Protocol Chat");
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource("logo.png")));
+        
     }
 
     /**
@@ -120,7 +117,11 @@ public class MainView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void buttonSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSendActionPerformed
-        send(Chat.send(textSend.getText()));
+        if(textSend.getText().charAt(0) == '/') {
+            chat.executeCommand(textSend.getText());
+        } else {
+            userMessage(chat.send(textSend.getText()));
+        }
         textSend.setText("");
     }//GEN-LAST:event_buttonSendActionPerformed
 
@@ -130,11 +131,33 @@ public class MainView extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_textSendKeyPressed
 
-    private void send(Message message) {
-        JLabel label = new JLabel(message.getTime().getHour() + ":" + message.getTime().getMinute() + "> " + message.getText());
+    public void messageSystem(String message) {
+        JLabel label = new JLabel(message);
+        label.setForeground(Color.RED);
+        label.setName("label" + count);
+        label.setBounds(5, count * 15, chatPanel.getSize().width - 10, 25);
+        label.setVisible(true);
+        panel.add(label);
+        count++;
+        this.repaint();
+    }
+    
+    private void messageRemoteUser(RemoteMessage message) {
+        JLabel label = new JLabel(message.getUsername() + " - " + message.getTime().getHour() + ":" + message.getTime().getMinute() + "> " + message.getText());
+        label.setForeground(Color.DARK_GRAY);
+        label.setName("label" + count);
+        label.setBounds(5, count * 15, chatPanel.getSize().width - 10, 25);
+        label.setVisible(true);
+        panel.add(label);
+        count++;
+        this.repaint();
+    }
+    
+    private void userMessage(Message message) {
+        JLabel label = new JLabel(chat.getNick() + " - " + message.getTime().getHour() + ":" + message.getTime().getMinute() + "> " + message.getText());
         label.setForeground(Color.BLUE);
         label.setName("label" + count);
-        label.setBounds(0, count * 15, 300, 25);
+        label.setBounds(5, count * 15, chatPanel.getSize().width - 10, 25);
         label.setVisible(true);
         panel.add(label);
         count++;
@@ -150,6 +173,11 @@ public class MainView extends javax.swing.JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new MainView().setVisible(true);
+            }
+        });
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
