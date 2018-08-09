@@ -9,7 +9,9 @@ import br.edu.utfpr.daeln.csr31.chat4dpam5.Chat;
 import br.edu.utfpr.daeln.csr31.chat4dpam5.beans.Message;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Toolkit;
+import java.time.format.DateTimeFormatter;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -30,10 +32,11 @@ public class MainView extends javax.swing.JFrame {
         initComponents();
         chatPanel.setPreferredSize(new Dimension(100, 100));
         chatPanel.setAlignmentX(LEFT_ALIGNMENT);
-        panel = new JPanel();
+        panel = (JPanel)chatPanel.getViewport().getView();
         panel.setBackground(Color.WHITE);
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-        chatPanel.setViewportView(panel);
+        //panel.setLayout(new FlowLayout());
+        //chatPanel.setViewportView(panel);
         this.chatPanel.setViewportBorder(new LineBorder(Color.BLACK));
         this.setTitle("D4-Pam5 Protocol Chat");
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource("logo.png")));
@@ -128,16 +131,14 @@ public class MainView extends javax.swing.JFrame {
     }//GEN-LAST:event_textSendKeyPressed
 
     private void send(Message message) {
-        JPanel p = new JPanel();        
-        p.setLayout(new BoxLayout(p, BoxLayout.LINE_AXIS));
-        p.setName("panel" + count);
-        JLabel label = new JLabel(message.getText());
-        label.setSize(100,100);
-        label.setName("label" + count++);
+        JLabel label = new JLabel(message.getTime().getHour() + ":" + message.getTime().getMinute() + "> " + message.getText());
+        label.setForeground(Color.BLUE);
+        label.setName("label" + count);
+        label.setBounds(0, count * 15, 300, 25);
         label.setVisible(true);
-        p.setVisible(true);
-        p.add(label);
         panel.add(label);
+        count++;
+        this.repaint();
     }
     
     /**
