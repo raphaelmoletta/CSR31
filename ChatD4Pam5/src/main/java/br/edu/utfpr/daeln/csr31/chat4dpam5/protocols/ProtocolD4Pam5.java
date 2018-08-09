@@ -13,7 +13,7 @@ import br.edu.utfpr.daeln.csr31.chat4dpam5.interfaces.Protocol;
  *
  * @author rapha
  */
-public class ProtocolD4Pam5 implements Protocol {
+public class ProtocolD4Pam5 extends Protocol {
     @Override
     public String decode(Data[] message) {
         if(message instanceof DataD4Pam5[]) {

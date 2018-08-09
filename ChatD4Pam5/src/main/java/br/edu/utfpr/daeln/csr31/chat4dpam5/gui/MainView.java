@@ -6,8 +6,9 @@
 package br.edu.utfpr.daeln.csr31.chat4dpam5.gui;
 
 import br.edu.utfpr.daeln.csr31.chat4dpam5.Chat;
-import java.awt.BorderLayout;
+import br.edu.utfpr.daeln.csr31.chat4dpam5.beans.Message;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Toolkit;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -21,11 +22,18 @@ import javax.swing.border.LineBorder;
 public class MainView extends javax.swing.JFrame {
     private static final long serialVersionUID = -6467255376560618319L;
     private int count = 0;
+    private JPanel panel = null;
     /**
      * Creates new form MainView
      */
     public MainView() {
         initComponents();
+        chatPanel.setPreferredSize(new Dimension(100, 100));
+        chatPanel.setAlignmentX(LEFT_ALIGNMENT);
+        panel = new JPanel();
+        panel.setBackground(Color.WHITE);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+        chatPanel.setViewportView(panel);
         this.chatPanel.setViewportBorder(new LineBorder(Color.BLACK));
         this.setTitle("D4-Pam5 Protocol Chat");
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource("logo.png")));
@@ -109,8 +117,7 @@ public class MainView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void buttonSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSendActionPerformed
-        Chat.send(textSend.getText());
-        send(textSend.getText());
+        send(Chat.send(textSend.getText()));
         textSend.setText("");
     }//GEN-LAST:event_buttonSendActionPerformed
 
@@ -120,16 +127,17 @@ public class MainView extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_textSendKeyPressed
 
-    private void send(String message) {
-        JPanel panel = new JPanel();        
-        panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
-        panel.setName("panel" + count);
-        JLabel label = new JLabel(message);
-        label.setSize(100,10);
+    private void send(Message message) {
+        JPanel p = new JPanel();        
+        p.setLayout(new BoxLayout(p, BoxLayout.LINE_AXIS));
+        p.setName("panel" + count);
+        JLabel label = new JLabel(message.getText());
+        label.setSize(100,100);
         label.setName("label" + count++);
         label.setVisible(true);
+        p.setVisible(true);
+        p.add(label);
         panel.add(label);
-        chatPanel.getViewport().add(label, BorderLayout.AFTER_LAST_LINE);
     }
     
     /**
