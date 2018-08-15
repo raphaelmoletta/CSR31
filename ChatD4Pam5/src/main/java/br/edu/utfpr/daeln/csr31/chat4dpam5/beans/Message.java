@@ -25,6 +25,10 @@ public class Message {
     }
 
     public void setData(Data[] data) {
+        encoded = "";
+        for(Data d : data) {
+            encoded += d.toString();
+        }
         this.data = data;
     }
  

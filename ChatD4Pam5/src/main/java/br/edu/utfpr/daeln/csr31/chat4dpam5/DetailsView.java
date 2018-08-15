@@ -1,16 +1,18 @@
 package br.edu.utfpr.daeln.csr31.chat4dpam5;
 
 import br.edu.utfpr.daeln.csr31.chat4dpam5.beans.Message;
+import br.edu.utfpr.daeln.csr31.chat4dpam5.datas.DataD4Pam5;
+import br.edu.utfpr.daeln.csr31.chat4dpam5.interfaces.Data;
+import br.edu.utfpr.daeln.csr31.chat4dpam5.interfaces.Protocol;
 import com.orsoncharts.Chart3D;
 import com.orsoncharts.Range;
-import com.orsoncharts.axis.Axis3D;
 import com.orsoncharts.axis.NumberAxis3D;
 import com.orsoncharts.axis.ValueAxis3D;
-import com.orsoncharts.data.Dataset3D;
+import com.orsoncharts.data.xyz.XYZDataItem;
+import com.orsoncharts.data.xyz.XYZSeries;
 import com.orsoncharts.data.xyz.XYZSeriesCollection;
 import com.orsoncharts.plot.Plot3D;
 import com.orsoncharts.plot.XYZPlot;
-import com.orsoncharts.renderer.Renderer3D;
 import com.orsoncharts.renderer.xyz.BarXYZRenderer;
 import com.orsoncharts.renderer.xyz.XYZRenderer;
 import java.awt.Toolkit;
@@ -31,7 +33,9 @@ public class DetailsView extends javax.swing.JFrame {
         jTextAreaEncoded.setText(message.getEncoded());
         jLabelEncoded.setText("Encoded (" + message.getEncoder().toString() + "):");
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource("logo.png")));
-        XYZSeriesCollection dataset = new XYZSeriesCollection();
+        
+        XYZSeriesCollection dataset = fillDataset(message);
+        
         XYZRenderer renderer = new BarXYZRenderer();
         ValueAxis3D xAxis = new NumberAxis3D("X", new Range(-2, 2));
         ValueAxis3D yAxis = new NumberAxis3D("Y", new Range(-2, 2));
@@ -66,18 +70,21 @@ public class DetailsView extends javax.swing.JFrame {
 
         jLabelText.setText("Text:");
 
+        jTextAreaText.setEditable(false);
         jTextAreaText.setColumns(20);
         jTextAreaText.setRows(5);
         jScrollPane1.setViewportView(jTextAreaText);
 
         jLabelBinary.setText("Binary:");
 
+        jTextAreaBinary.setEditable(false);
         jTextAreaBinary.setColumns(20);
         jTextAreaBinary.setRows(5);
         jScrollPane2.setViewportView(jTextAreaBinary);
 
         jLabelEncoded.setText("Encoded:");
 
+        jTextAreaEncoded.setEditable(false);
         jTextAreaEncoded.setColumns(20);
         jTextAreaEncoded.setRows(5);
         jScrollPane3.setViewportView(jTextAreaEncoded);
@@ -150,4 +157,26 @@ public class DetailsView extends javax.swing.JFrame {
     private javax.swing.JTextArea jTextAreaEncoded;
     private javax.swing.JTextArea jTextAreaText;
     // End of variables declaration//GEN-END:variables
+
+    private XYZSeriesCollection fillDataset(Message message) {
+        XYZSeriesCollection result = new XYZSeriesCollection();
+        if(message.getEncoder() == Protocol.ENCODER.D4Pam5) {
+            XYZSeries series = new XYZSeries(new Comparable<Data>() {
+                @Override
+                public int compareTo(Data t) {
+                    return t.toString().compareToIgnoreCase(this.toString());
+                }
+                
+            });
+            
+            for(int i = 0; i < message.getData().length; i++) {
+                DataD4Pam5 data = (DataD4Pam5)message.getData()[i];
+                for(int j = 0; j < data.getData().length; j++) {
+                    series.add(new XYZDataItem(i, data.getData()[j], j));
+                }
+                result.add(series);
+            }
+        }
+        return result;
+    }
 }
