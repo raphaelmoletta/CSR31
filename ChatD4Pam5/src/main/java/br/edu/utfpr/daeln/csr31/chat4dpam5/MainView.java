@@ -1,11 +1,17 @@
-package br.edu.utfpr.daeln.csr31.chat4dpam5.gui;
+package br.edu.utfpr.daeln.csr31.chat4dpam5;
 
-import br.edu.utfpr.daeln.csr31.chat4dpam5.Chat;
+import br.edu.utfpr.daeln.csr31.chat4dpam5.Listners.OpenDetails;
+import br.edu.utfpr.daeln.csr31.chat4dpam5.core.Chat;
 import br.edu.utfpr.daeln.csr31.chat4dpam5.beans.Message;
 import br.edu.utfpr.daeln.csr31.chat4dpam5.beans.RemoteMessage;
+import br.edu.utfpr.daeln.csr31.chat4dpam5.interfaces.Data;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -16,10 +22,13 @@ import javax.swing.border.LineBorder;
  * @author rapha
  */
 public final class MainView extends javax.swing.JFrame {
+
     private static final long serialVersionUID = -6467255376560618319L;
     private int count = 0;
     private JPanel panel = null;
     private Chat chat;
+    private Map<String, Data> datas = new HashMap<String, Data>();
+
     /**
      * Creates new form MainView
      */
@@ -28,15 +37,22 @@ public final class MainView extends javax.swing.JFrame {
         chat = new Chat(this);
         chatPanel.setPreferredSize(new Dimension(100, 100));
         chatPanel.setAlignmentX(LEFT_ALIGNMENT);
-        panel = (JPanel)chatPanel.getViewport().getView();
+        panel = (JPanel) chatPanel.getViewport().getView();
         panel.setBackground(Color.WHITE);
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-        //panel.setLayout(new FlowLayout());
-        //chatPanel.setViewportView(panel);
+
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                chat.stop();
+                System.exit(0);
+            }
+        });
+
         this.chatPanel.setViewportBorder(new LineBorder(Color.BLACK));
         this.setTitle("D4-Pam5 Protocol Chat");
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource("logo.png")));
-        
+
     }
 
     /**
@@ -117,10 +133,15 @@ public final class MainView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void buttonSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSendActionPerformed
-        if(textSend.getText().charAt(0) == '/') {
-            chat.executeCommand(textSend.getText());
+        if (textSend.getText().charAt(0) == '/') {
+            if (!chat.executeCommand(textSend.getText())) {
+                messageSystem("ERROR: incorrect syntax on command '" + textSend.getText() + "'");
+            }
+        } else if (chat.isConnected()) {
+            userMessage(chat.send(textSend.getText()));
         } else {
             userMessage(chat.send(textSend.getText()));
+            messageSystem("ERROR: There isn't a connection to send the message: '" + textSend.getText() + "'");
         }
         textSend.setText("");
     }//GEN-LAST:event_buttonSendActionPerformed
@@ -130,7 +151,7 @@ public final class MainView extends javax.swing.JFrame {
             buttonSendActionPerformed(null);
         }
     }//GEN-LAST:event_textSendKeyPressed
-
+    
     public void messageSystem(String message) {
         JLabel label = new JLabel(message);
         label.setForeground(Color.RED);
@@ -141,7 +162,7 @@ public final class MainView extends javax.swing.JFrame {
         count++;
         this.repaint();
     }
-    
+
     private void messageRemoteUser(RemoteMessage message) {
         JLabel label = new JLabel(message.getUsername() + " - " + message.getTime().getHour() + ":" + message.getTime().getMinute() + "> " + message.getText());
         label.setForeground(Color.DARK_GRAY);
@@ -149,10 +170,11 @@ public final class MainView extends javax.swing.JFrame {
         label.setBounds(5, count * 15, chatPanel.getSize().width - 10, 25);
         label.setVisible(true);
         panel.add(label);
+        label.addMouseListener(new OpenDetails(message));
         count++;
         this.repaint();
     }
-    
+
     private void userMessage(Message message) {
         JLabel label = new JLabel(chat.getNick() + " - " + message.getTime().getHour() + ":" + message.getTime().getMinute() + "> " + message.getText());
         label.setForeground(Color.BLUE);
@@ -160,10 +182,11 @@ public final class MainView extends javax.swing.JFrame {
         label.setBounds(5, count * 15, chatPanel.getSize().width - 10, 25);
         label.setVisible(true);
         panel.add(label);
+        label.addMouseListener(new OpenDetails(message));
         count++;
         this.repaint();
     }
-    
+
     /**
      * @param args the command line arguments
      */
@@ -197,7 +220,6 @@ public final class MainView extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
