@@ -107,9 +107,6 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Encoded:"/>
       </Properties>
-      <AccessibilityProperties>
-        <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Encoded:"/>
-      </AccessibilityProperties>
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane3">
       <AuxValues>

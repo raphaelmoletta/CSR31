@@ -5,10 +5,13 @@ import br.edu.utfpr.daeln.csr31.chat4dpam5.datas.DataD4Pam5;
 import br.edu.utfpr.daeln.csr31.chat4dpam5.interfaces.Data;
 import br.edu.utfpr.daeln.csr31.chat4dpam5.interfaces.Protocol;
 import com.orsoncharts.Chart3D;
+import com.orsoncharts.Chart3DFactory;
+import com.orsoncharts.Chart3DPanel;
 import com.orsoncharts.Range;
 import com.orsoncharts.axis.NumberAxis3D;
 import com.orsoncharts.axis.ValueAxis3D;
 import com.orsoncharts.data.xyz.XYZDataItem;
+import com.orsoncharts.data.xyz.XYZDataset;
 import com.orsoncharts.data.xyz.XYZSeries;
 import com.orsoncharts.data.xyz.XYZSeriesCollection;
 import com.orsoncharts.plot.Plot3D;
@@ -22,6 +25,8 @@ import java.awt.Toolkit;
  * @author rapha
  */
 public class DetailsView extends javax.swing.JFrame {
+
+    private static final long serialVersionUID = -8153929403863946512L;
     /**
      * Creates new form DetailsView
      * @param message
@@ -34,16 +39,12 @@ public class DetailsView extends javax.swing.JFrame {
         jLabelEncoded.setText("Encoded (" + message.getEncoder().toString() + "):");
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource("logo.png")));
         
-        XYZSeriesCollection dataset = fillDataset(message);
+        XYZDataset dataset = fillDataset(message);
         
-        XYZRenderer renderer = new BarXYZRenderer();
-        ValueAxis3D xAxis = new NumberAxis3D("X", new Range(-2, 2));
-        ValueAxis3D yAxis = new NumberAxis3D("Y", new Range(-2, 2));
-        ValueAxis3D zAxis = new NumberAxis3D("Z", new Range(-2, 2));
-        
-        Plot3D plot = new XYZPlot(dataset, renderer, xAxis, yAxis, zAxis);
-        Chart3D chart = plot.getChart();
-        
+        Chart3D plot = Chart3DFactory.createXYZBarChart("Title", "Subtitle", dataset, "x", "y", "z");
+        Chart3DPanel chart = new Chart3DPanel(plot);        
+        this.getContentPane().add(chart);
+        chart.zoomToFit();
     }
 
     /**
@@ -158,18 +159,11 @@ public class DetailsView extends javax.swing.JFrame {
     private javax.swing.JTextArea jTextAreaText;
     // End of variables declaration//GEN-END:variables
 
-    private XYZSeriesCollection fillDataset(Message message) {
+    private XYZDataset fillDataset(Message message) {
         XYZSeriesCollection result = new XYZSeriesCollection();
         if(message.getEncoder() == Protocol.ENCODER.D4Pam5) {
-            XYZSeries series = new XYZSeries(new Comparable<Data>() {
-                @Override
-                public int compareTo(Data t) {
-                    return t.toString().compareToIgnoreCase(this.toString());
-                }
-                
-            });
-            
             for(int i = 0; i < message.getData().length; i++) {
+                XYZSeries series = new XYZSeries("Series " + i);
                 DataD4Pam5 data = (DataD4Pam5)message.getData()[i];
                 for(int j = 0; j < data.getData().length; j++) {
                     series.add(new XYZDataItem(i, data.getData()[j], j));
