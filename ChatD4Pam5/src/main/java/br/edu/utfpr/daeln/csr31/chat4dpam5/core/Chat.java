@@ -128,9 +128,11 @@ public class Chat {
                 if(data.length == 2) {
                     if("enable".equals(data[1].toLowerCase().trim())) {
                         config.setDebug(true);
+                        config.getView().messageSystem("[INFO] Debug Mode is on");
                         return true;
                     } else if("disable".equals(data[1].toLowerCase().trim())) {
                         config.setDebug(false);
+                        config.getView().messageSystem("[INFO] Debug Mode is off");
                         return true;
                     }
                 }
