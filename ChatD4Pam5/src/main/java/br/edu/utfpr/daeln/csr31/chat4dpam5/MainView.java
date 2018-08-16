@@ -1,17 +1,12 @@
 package br.edu.utfpr.daeln.csr31.chat4dpam5;
 
-import br.edu.utfpr.daeln.csr31.chat4dpam5.Listners.OpenDetails;
+import br.edu.utfpr.daeln.csr31.chat4dpam5.listners.OpenDetails;
 import br.edu.utfpr.daeln.csr31.chat4dpam5.core.Chat;
 import br.edu.utfpr.daeln.csr31.chat4dpam5.beans.Message;
 import br.edu.utfpr.daeln.csr31.chat4dpam5.beans.RemoteMessage;
-import br.edu.utfpr.daeln.csr31.chat4dpam5.interfaces.Data;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.HashMap;
-import java.util.Map;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -27,7 +22,6 @@ public final class MainView extends javax.swing.JFrame {
     private int count = 0;
     private JPanel panel = null;
     private Chat chat;
-    private Map<String, Data> datas = new HashMap<String, Data>();
 
     /**
      * Creates new form MainView
@@ -65,22 +59,19 @@ public final class MainView extends javax.swing.JFrame {
     private void initComponents() {
 
         textSend = new javax.swing.JTextField();
-        buttonSend = new javax.swing.JButton();
         chatPanel = new javax.swing.JScrollPane();
         jPanel1 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        textSend.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textSendActionPerformed(evt);
+            }
+        });
         textSend.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 textSendKeyPressed(evt);
-            }
-        });
-
-        buttonSend.setLabel("Enviar");
-        buttonSend.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonSendActionPerformed(evt);
             }
         });
 
@@ -110,11 +101,7 @@ public final class MainView extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(chatPanel)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(textSend, javax.swing.GroupLayout.PREFERRED_SIZE, 613, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(buttonSend, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                    .addComponent(textSend))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -123,16 +110,24 @@ public final class MainView extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(chatPanel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(textSend)
-                    .addComponent(buttonSend))
+                .addComponent(textSend, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void buttonSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSendActionPerformed
+    private void textSendKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textSendKeyPressed
+        if (evt.getExtendedKeyCode() == 10) {
+            send();
+        }
+    }//GEN-LAST:event_textSendKeyPressed
+
+    private void textSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textSendActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_textSendActionPerformed
+    
+    private void send() {
         if (textSend.getText().charAt(0) == '/') {
             if (!chat.executeCommand(textSend.getText())) {
                 messageSystem("ERROR: incorrect syntax on command '" + textSend.getText() + "'");
@@ -144,14 +139,8 @@ public final class MainView extends javax.swing.JFrame {
             messageSystem("ERROR: There isn't a connection to send the message: '" + textSend.getText() + "'");
         }
         textSend.setText("");
-    }//GEN-LAST:event_buttonSendActionPerformed
-
-    private void textSendKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textSendKeyPressed
-        if (evt.getExtendedKeyCode() == 10) {
-            buttonSendActionPerformed(null);
-        }
-    }//GEN-LAST:event_textSendKeyPressed
-    
+    }
+     
     public void messageSystem(String message) {
         JLabel label = new JLabel(message);
         label.setForeground(Color.RED);
@@ -223,7 +212,6 @@ public final class MainView extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton buttonSend;
     private javax.swing.JScrollPane chatPanel;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField textSend;

@@ -85,7 +85,7 @@ public class Chat {
             case "/nick" :
                 if(data.length == 2) {
                     config.setNick(data[1]);
-                    config.getView().messageSystem("New nickname: " + config.getNick());
+                    config.getView().messageSystem("[INFO] Nickname setted to " + config.getNick());
                     return true;
                 }
                 break;
@@ -96,20 +96,28 @@ public class Chat {
                             int port = Integer.parseInt(data[2]);
                             if(port >= 1 && port <= 65535) {
                                 config.setPort(port);
+                                config.getView().messageSystem("[INFO] Server port setted to " + port);
                             } else {
-                                config.getView().messageSystem("Port must be between 1 and 65535");
+                                config.getView().messageSystem("[ERROR] Port must be between 1 and 65535");
                             }
                             return true;
                         } catch(NumberFormatException e) {
-                            config.getView().messageSystem("Wrong port format");
+                            config.getView().messageSystem("[ERROR] Wrong port format");
                         }
-                    } else if("search".equals(data[1])) {
-                        
+                    } else if("search".equals(data[1].trim().toLowerCase())) {
+                        config.getView().messageSystem("[INFO] Starting search server ... ");
+                        config.getView().messageSystem("[INFO] Port: " + config.getPort());
+                        return true;
+                    } else if("start".equals(data[1].trim().toLowerCase())) {
+                        config.getView().messageSystem("[INFO] Starting server on this host ... ");
+                        config.getView().messageSystem("[INFO] Port: " + config.getPort());
+                        return true;
                     }
                 } else {
-                    config.getView().messageSystem("Help for '/server'");
-                    config.getView().messageSystem("port <port number> - Define port number for comunication, must be between 1 and 65535");
-                    config.getView().messageSystem("search - Search for a server in a defined port.");
+                    config.getView().messageSystem("[HELP] Help for '/server'");
+                    config.getView().messageSystem("[HELP]    port <port number> \t- Define port number for comunication, must be between 1 and 65535");
+                    config.getView().messageSystem("[HELP]    search \t- Search for a server in a defined port.");
+                    return true;
                 }
                 break;
             case "/connect" :

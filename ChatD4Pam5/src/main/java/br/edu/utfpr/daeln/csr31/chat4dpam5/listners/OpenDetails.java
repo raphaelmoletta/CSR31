@@ -1,4 +1,4 @@
-package br.edu.utfpr.daeln.csr31.chat4dpam5.Listners;
+package br.edu.utfpr.daeln.csr31.chat4dpam5.listners;
 
 import br.edu.utfpr.daeln.csr31.chat4dpam5.DetailsView;
 import br.edu.utfpr.daeln.csr31.chat4dpam5.beans.Message;
