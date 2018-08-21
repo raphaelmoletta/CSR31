@@ -38,9 +38,11 @@ public class ListnerThread implements Runnable {
                 }
                 
                 DatagramPacket dp = new DatagramPacket(buffer, buffer.length);
-                config.debug("RecivedMessage");
+                
                 socket.receive(dp);
-                data.add(dp);
+                
+                config.debug("RecivedMessage\n" + new String(dp.getData()));
+                //new Thread(new ProcessDatagramPackageThread(dp, config)).start();
             }
         } catch (SocketTimeoutException ex) {
             config.debug(ex);

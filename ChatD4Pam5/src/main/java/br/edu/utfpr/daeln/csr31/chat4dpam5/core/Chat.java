@@ -78,7 +78,7 @@ public class Chat {
     public String getNick() {
         return config.getNick();
     }
-
+/*
     public boolean executeCommand(String text) {
         String[] data = text.split(" ");
         switch(data[0].toLowerCase()) {
@@ -139,7 +139,7 @@ public class Chat {
                 break;
         }
         return false;
-    }
+    }*/
 
     public boolean isConnected() {
         return config.isConnected();

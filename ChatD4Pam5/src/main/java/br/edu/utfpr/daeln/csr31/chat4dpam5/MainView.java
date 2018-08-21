@@ -4,6 +4,8 @@ import br.edu.utfpr.daeln.csr31.chat4dpam5.listners.OpenDetails;
 import br.edu.utfpr.daeln.csr31.chat4dpam5.core.Chat;
 import br.edu.utfpr.daeln.csr31.chat4dpam5.beans.Message;
 import br.edu.utfpr.daeln.csr31.chat4dpam5.beans.RemoteMessage;
+import br.edu.utfpr.daeln.csr31.chat4dpam5.core.Chato;
+import br.edu.utfpr.daeln.csr31.chat4dpam5.interfaces.Messenger;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -16,7 +18,7 @@ import javax.swing.border.LineBorder;
  *
  * @author rapha
  */
-public final class MainView extends javax.swing.JFrame {
+public final class MainView extends javax.swing.JFrame implements Messenger {
 
     private static final long serialVersionUID = -6467255376560618319L;
     private int count = 0;
@@ -29,6 +31,7 @@ public final class MainView extends javax.swing.JFrame {
     public MainView() {
         initComponents();
         chat = new Chat(this);
+        Chato.initialize(this);
         chatPanel.setPreferredSize(new Dimension(100, 100));
         chatPanel.setAlignmentX(LEFT_ALIGNMENT);
         panel = (JPanel) chatPanel.getViewport().getView();
@@ -44,7 +47,7 @@ public final class MainView extends javax.swing.JFrame {
         });
 
         this.chatPanel.setViewportBorder(new LineBorder(Color.BLACK));
-        this.setTitle("D4-Pam5 Protocol Chat");
+        this.setTitle("ChatO");
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource("logo.png")));
 
     }
@@ -126,52 +129,68 @@ public final class MainView extends javax.swing.JFrame {
     private void textSendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textSendActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_textSendActionPerformed
-    
+
     private void send() {
         if (textSend.getText().charAt(0) == '/') {
-            if (!chat.executeCommand(textSend.getText())) {
-                messageSystem("ERROR: incorrect syntax on command '" + textSend.getText() + "'");
-            }
+            Chato.execute(textSend.getText());
         } else if (chat.isConnected()) {
-            userMessage(chat.send(textSend.getText()));
+            Chato.send(textSend.getText());
         } else {
-            userMessage(chat.send(textSend.getText()));
-            messageSystem("ERROR: There isn't a connection to send the message: '" + textSend.getText() + "'");
+            Chato.send(textSend.getText());
+            Chato.messenger().systemMessage("There isn't a connection to send the message: '" + textSend.getText() + "'", MESSAGES_TYPES.ERROR);
         }
         textSend.setText("");
     }
-     
-    public void messageSystem(String message) {
-        JLabel label = new JLabel(message);
-        label.setForeground(Color.RED);
-        label.setName("label" + count);
-        label.setBounds(5, count * 15, chatPanel.getSize().width - 10, 25);
-        label.setVisible(true);
-        panel.add(label);
-        count++;
-        this.repaint();
+
+    @Override
+    public void systemMessage(String message, MESSAGES_TYPES type) {
+        JLabel label = new JLabel("[" + type.name() + "] " + message);
+
+        switch (type) {
+            case DEBUG:
+                if(!Chato.isDebuging()) {
+                    return;
+                }
+                label.setForeground(Color.PINK);
+                break;
+            case ERROR:
+                label.setForeground(Color.RED);
+                break;
+            case HELP:
+                label.setForeground(Color.GREEN);
+                break;
+            case INFO:
+                label.setForeground(Color.GRAY);
+                break;
+            case WARN:
+                label.setForeground(Color.ORANGE);
+                break;
+        }
+
+        addLabel(label);
     }
 
-    private void messageRemoteUser(RemoteMessage message) {
+    @Override
+    public void remoteUserMessage(RemoteMessage message) {
         JLabel label = new JLabel(message.getUsername() + " - " + message.getTime().getHour() + ":" + message.getTime().getMinute() + "> " + message.getText());
-        label.setForeground(Color.DARK_GRAY);
-        label.setName("label" + count);
-        label.setBounds(5, count * 15, chatPanel.getSize().width - 10, 25);
-        label.setVisible(true);
-        panel.add(label);
+        label.setForeground(Color.BLUE);
         label.addMouseListener(new OpenDetails(message));
-        count++;
-        this.repaint();
+        addLabel(label);
     }
 
-    private void userMessage(Message message) {
-        JLabel label = new JLabel(chat.getNick() + " - " + message.getTime().getHour() + ":" + message.getTime().getMinute() + "> " + message.getText());
-        label.setForeground(Color.BLUE);
+    @Override
+    public void userMessage(Message message) {
+        JLabel label = new JLabel(Chato.getNick() + " - " + message.getTime().getHour() + ":" + message.getTime().getMinute() + "> " + message.getText());
+        label.setForeground(Color.DARK_GRAY);
+        label.addMouseListener(new OpenDetails(message));
+        addLabel(label);
+    }
+    
+    private void addLabel(JLabel label) {
         label.setName("label" + count);
         label.setBounds(5, count * 15, chatPanel.getSize().width - 10, 25);
         label.setVisible(true);
         panel.add(label);
-        label.addMouseListener(new OpenDetails(message));
         count++;
         this.repaint();
     }
