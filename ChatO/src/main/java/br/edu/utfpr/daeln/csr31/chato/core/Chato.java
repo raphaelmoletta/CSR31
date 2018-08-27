@@ -78,7 +78,7 @@ public class Chato {
                     bytes[0] = 1;
                     bytes[1] = -127;
                     nick = "\n" + param.getNick() + "\n";
-                    System.arraycopy(nick.getBytes(), 0, bytes, 2, nick.getBytes().length + 2);
+                    System.arraycopy(nick.getBytes(), 0, bytes, 2, nick.getBytes().length);
                     dp = new DatagramPacket(bytes, bytes.length, InetAddress.getByName("255.255.255.255"), param.getPort());
                     socket.send(dp);
                     break;
@@ -86,7 +86,7 @@ public class Chato {
                     bytes[0] = 2;
                     bytes[1] = -127;
                     nick = "\n" + param.getNick() + "\n";
-                    System.arraycopy(nick.getBytes(), 0, bytes, 2, nick.getBytes().length + 2);
+                    System.arraycopy(nick.getBytes(), 0, bytes, 2, nick.getBytes().length);
                     for(User u : param.getUsers().values()) {
                         dp = new DatagramPacket(bytes, bytes.length, u.getInetAddress(), param.getPort());
                         socket.send(dp);
