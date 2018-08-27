@@ -3,6 +3,8 @@ package br.edu.utfpr.daeln.csr31.chat4dpam5.core;
 import br.edu.utfpr.daeln.csr31.chat4dpam5.beans.ChatoParameters;
 import br.edu.utfpr.daeln.csr31.chat4dpam5.interfaces.Messenger;
 import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  *
@@ -20,10 +22,18 @@ public class ProcessDatagramPackageThread implements Runnable {
 
     @Override
     public void run() {
-        Chato.messenger().systemMessage(packet.getAddress().toString(), Messenger.MESSAGES_TYPES.DEBUG);
+        try {
+            if ( InetAddress.getLocalHost().getHostAddress().equals(packet.getAddress().toString().substring(1, packet.getAddress().toString().length()))) {
+                Chato.messenger().systemMessage("ECOcococo...", Messenger.MESSAGES_TYPES.DEBUG);
+                return;
+            }
+        } catch (UnknownHostException e) {
+
+        }
+
         switch (packet.getData()[0]) {
             case 1: //PING
-                
+
                 //param.getUsers()
                 break;
             case 2: //PONG

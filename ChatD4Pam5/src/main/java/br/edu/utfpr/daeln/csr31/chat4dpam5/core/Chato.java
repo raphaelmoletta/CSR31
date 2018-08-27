@@ -62,7 +62,8 @@ public class Chato {
 
     public synchronized void search() {
 
-        try (DatagramSocket socket = new DatagramSocket(param.getPort() + 1, InetAddress.getByName("255.255.255.255"))) {
+        try {
+            DatagramSocket socket = new DatagramSocket(param.getPort() + 1, InetAddress.getByName("0.0.0.0"));
             socket.setBroadcast(true);
             //[code][slot][reserved][reserved][reserved][message 250]
             byte[] bytes = new byte[256];
@@ -70,9 +71,13 @@ public class Chato {
             bytes[1] = -127;
 
             DatagramPacket dp = new DatagramPacket(bytes, bytes.length, InetAddress.getByName("255.255.255.255"), param.getPort());
+            instance.messanger.systemMessage("Sending request...", Messenger.MESSAGES_TYPES.INFO);
             socket.send(dp);
+            socket.close();
         } catch (SocketException e) {
+            System.out.println(e.toString());
         } catch (IOException ex) {
+            System.out.println(ex.toString());
         }
     }
 

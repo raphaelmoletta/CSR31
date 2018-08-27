@@ -44,7 +44,7 @@ public class ListnerThread implements Runnable {
 
                     socket.receive(dp);
 
-                    Chato.messenger().systemMessage("RecivedMessage\n" + new String(dp.getData()), Messenger.MESSAGES_TYPES.DEBUG);
+                    Chato.messenger().systemMessage("RecivedMessage: " + new String(dp.getData()), Messenger.MESSAGES_TYPES.DEBUG);
                     new Thread(new ProcessDatagramPackageThread(dp, param)).start();
                 } catch (SocketTimeoutException ex) {
                     Chato.messenger().systemMessage("Waited Exception :: Socket Timeout Exception\n", Messenger.MESSAGES_TYPES.DEBUG);
