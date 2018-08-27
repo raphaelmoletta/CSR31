@@ -29,7 +29,7 @@ public class ListnerThread implements Runnable {
         try {
             DatagramSocket socket = new DatagramSocket(param.getPort(), InetAddress.getByName("0.0.0.0"));
             byte[] buffer = new byte[1024];
-            Chato.messenger().systemMessage("Listeningchato.", Messenger.MESSAGES_TYPES.DEBUG);
+            Chato.messenger().systemMessage("Listening...", Messenger.MESSAGES_TYPES.DEBUG);
             socket.setSoTimeout(1000);
             while (param.isRunning()) {
                 try {

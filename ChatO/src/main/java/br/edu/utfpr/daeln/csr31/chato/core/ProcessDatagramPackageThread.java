@@ -1,6 +1,7 @@
 package br.edu.utfpr.daeln.csr31.chato.core;
 
 import br.edu.utfpr.daeln.csr31.chato.beans.ChatoParameters;
+import br.edu.utfpr.daeln.csr31.chato.beans.User;
 import br.edu.utfpr.daeln.csr31.chato.interfaces.Messenger;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -24,7 +25,7 @@ public class ProcessDatagramPackageThread implements Runnable {
     public void run() {
         try {
             if ( InetAddress.getLocalHost().getHostAddress().equals(packet.getAddress().toString().substring(1, packet.getAddress().toString().length()))) {
-                Chato.messenger().systemMessage("ECOcococochato.", Messenger.MESSAGES_TYPES.DEBUG);
+                Chato.messenger().systemMessage("ECOcococo.", Messenger.MESSAGES_TYPES.DEBUG);
                 return;
             }
         } catch (UnknownHostException e) {
@@ -33,10 +34,22 @@ public class ProcessDatagramPackageThread implements Runnable {
 
         switch (packet.getData()[0]) {
             case 1: //PING
-
+                if(packet.getData()[1] == -127) {
+                    Chato.messenger().systemMessage("Recived ping from: " + packet.getAddress(), Messenger.MESSAGES_TYPES.DEBUG);
+                    User user = new User();
+                    user.setInetAddress(packet.getAddress());
+                    Chato.add(user);
+                    Chato.send(Chato.Commands.PONG);
+                }
                 //param.getUsers()
                 break;
             case 2: //PONG
+                if(packet.getData()[1] == -127) {
+                    Chato.messenger().systemMessage("Recived pong from: " + packet.getAddress(), Messenger.MESSAGES_TYPES.DEBUG);
+                    User user = new User();
+                    user.setInetAddress(packet.getAddress());
+                    Chato.add(user);
+                }
                 break;
             case 10: //
                 break;

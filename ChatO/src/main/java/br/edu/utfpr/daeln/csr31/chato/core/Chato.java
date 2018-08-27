@@ -2,6 +2,7 @@ package br.edu.utfpr.daeln.csr31.chato.core;
 
 import br.edu.utfpr.daeln.csr31.chato.beans.ChatoParameters;
 import br.edu.utfpr.daeln.csr31.chato.beans.Message;
+import br.edu.utfpr.daeln.csr31.chato.beans.User;
 import br.edu.utfpr.daeln.csr31.chato.exceptions.NoSlotException;
 import br.edu.utfpr.daeln.csr31.chato.interfaces.Messenger;
 import br.edu.utfpr.daeln.csr31.chato.interfaces.Protocol;
@@ -24,7 +25,7 @@ public class Chato {
     private static Chato instance = null;
 
     public static enum Commands {
-        PING
+        PING, PONG
     };
 
     private Chato(Messenger messanger) {
@@ -60,19 +61,35 @@ public class Chato {
         });
     }
 
-    public synchronized void search() {
+    public static synchronized void send(Commands command) {
+        instance.sendInternal(command);
+    }
 
-        try {
-            DatagramSocket socket = new DatagramSocket(param.getPort() + 1, InetAddress.getByName("0.0.0.0"));
-            socket.setBroadcast(true);
+    public synchronized void sendInternal(Commands command) {
+        //[code][slot][reserved][reserved][reserved][message 250]
+        try (DatagramSocket socket = new DatagramSocket(param.getPort() + 1, InetAddress.getByName("0.0.0.0"))) {
             //[code][slot][reserved][reserved][reserved][message 250]
             byte[] bytes = new byte[256];
-            bytes[0] = 1;
-            bytes[1] = -127;
-
-            DatagramPacket dp = new DatagramPacket(bytes, bytes.length, InetAddress.getByName("255.255.255.255"), param.getPort());
-            instance.messanger.systemMessage("Sending requestchato.", Messenger.MESSAGES_TYPES.INFO);
-            socket.send(dp);
+            DatagramPacket dp;
+            switch (command) {
+                case PING:
+                    socket.setBroadcast(true);
+                    bytes[0] = 1;
+                    bytes[1] = -127;
+                    dp = new DatagramPacket(bytes, bytes.length, InetAddress.getByName("255.255.255.255"), param.getPort());
+                    socket.send(dp);
+                    break;
+                case PONG:
+                    bytes[0] = 2;
+                    bytes[1] = -127;
+                    for(User u : param.getUsers().values()) {
+                        dp = new DatagramPacket(bytes, bytes.length, u.getInetAddress(), param.getPort());
+                        socket.send(dp);
+                    }
+                    break;
+            }
+            instance.messanger.systemMessage("Sending...", Messenger.MESSAGES_TYPES.DEBUG);
+            
             socket.close();
         } catch (SocketException e) {
             System.out.println(e.toString());
@@ -171,10 +188,16 @@ public class Chato {
                 }
                 break;
             case "/connect":
-                instance.search();
+                Chato.send(Commands.PING);
                 break;
             default:
                 Chato.messenger().systemMessage("Invalid command: '" + parts[0] + "'", Messenger.MESSAGES_TYPES.WARN);
+        }
+    }
+
+    public synchronized static void add(User user) {
+        if (!instance.param.getUsers().containsKey(user.getInetAddress().toString())) {
+            instance.param.getUsers().put(user.getInetAddress().toString(), user);
         }
     }
 

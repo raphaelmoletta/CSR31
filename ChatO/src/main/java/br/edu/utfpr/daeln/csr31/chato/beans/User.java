@@ -13,5 +13,8 @@ public class User {
     public InetAddress getInetAddress() {
         return inetAddress;
     }
-    
+
+    public void setInetAddress(InetAddress address) {
+        this.inetAddress = address;
+    }
 }
