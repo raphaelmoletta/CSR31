@@ -39,6 +39,7 @@ public class ProcessDatagramPackageThread implements Runnable {
                     User user = new User();
                     user.setInetAddress(packet.getAddress());
                     Chato.add(user);
+                    user.setNick((new String(packet.getData())).split("\n")[1]);
                     Chato.send(Chato.Commands.PONG);
                 }
                 //param.getUsers()
@@ -48,6 +49,7 @@ public class ProcessDatagramPackageThread implements Runnable {
                     Chato.messenger().systemMessage("Recived pong from: " + packet.getAddress(), Messenger.MESSAGES_TYPES.DEBUG);
                     User user = new User();
                     user.setInetAddress(packet.getAddress());
+                    user.setNick((new String(packet.getData())).split("\n")[1]);
                     Chato.add(user);
                 }
                 break;

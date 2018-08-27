@@ -9,6 +9,7 @@ import java.net.InetAddress;
 public class User {
 
     private InetAddress inetAddress;
+    private String nick = "";
     
     public InetAddress getInetAddress() {
         return inetAddress;
@@ -16,5 +17,13 @@ public class User {
 
     public void setInetAddress(InetAddress address) {
         this.inetAddress = address;
+    }
+
+    public String getNick() {
+        return nick;
+    }
+
+    public void setNick(String nick) {
+        this.nick = nick;
     }
 }

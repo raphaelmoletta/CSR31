@@ -71,17 +71,22 @@ public class Chato {
             //[code][slot][reserved][reserved][reserved][message 250]
             byte[] bytes = new byte[256];
             DatagramPacket dp;
+            String nick;
             switch (command) {
                 case PING:
                     socket.setBroadcast(true);
                     bytes[0] = 1;
                     bytes[1] = -127;
+                    nick = "\n" + param.getNick() + "\n";
+                    System.arraycopy(nick.getBytes(), 0, bytes, 2, nick.getBytes().length + 2);
                     dp = new DatagramPacket(bytes, bytes.length, InetAddress.getByName("255.255.255.255"), param.getPort());
                     socket.send(dp);
                     break;
                 case PONG:
                     bytes[0] = 2;
                     bytes[1] = -127;
+                    nick = "\n" + param.getNick() + "\n";
+                    System.arraycopy(nick.getBytes(), 0, bytes, 2, nick.getBytes().length + 2);
                     for(User u : param.getUsers().values()) {
                         dp = new DatagramPacket(bytes, bytes.length, u.getInetAddress(), param.getPort());
                         socket.send(dp);
@@ -130,6 +135,7 @@ public class Chato {
 
     public static void execute(String command) {
         String parts[] = command.trim().split(" ");
+        Chato.messenger().systemMessage("Execute command: " + parts[0], Messenger.MESSAGES_TYPES.INFO);
         if ("/nick".equals(parts[0].trim().toLowerCase())) {
             if (parts.length >= 2) {
                 instance.param.setNick(parts[1]);
@@ -152,7 +158,11 @@ public class Chato {
         switch (parts[0]) {
             case "/list":
                 if (parts.length > 1) {
-
+                    if("users".equals(parts[1])) {
+                        instance.param.getUsers().values().forEach((user) -> {
+                            Chato.messenger().systemMessage(user.getNick() + user.getInetAddress().toString(), Messenger.MESSAGES_TYPES.INFO);
+                        });
+                    }
                 } else {
                     Chato.messenger().systemMessage("Command syntax: /list <subcommand>", Messenger.MESSAGES_TYPES.HELP);
                     Chato.messenger().systemMessage("  - users", Messenger.MESSAGES_TYPES.HELP);
