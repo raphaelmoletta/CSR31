@@ -1,10 +1,10 @@
-package br.edu.utfpr.daeln.csr31.chat4dpam5;
+package br.edu.utfpr.daeln.csr31.chato;
 
-import br.edu.utfpr.daeln.csr31.chat4dpam5.listners.OpenDetails;
-import br.edu.utfpr.daeln.csr31.chat4dpam5.beans.Message;
-import br.edu.utfpr.daeln.csr31.chat4dpam5.beans.RemoteMessage;
-import br.edu.utfpr.daeln.csr31.chat4dpam5.core.Chato;
-import br.edu.utfpr.daeln.csr31.chat4dpam5.interfaces.Messenger;
+import br.edu.utfpr.daeln.csr31.chato.listners.OpenDetails;
+import br.edu.utfpr.daeln.csr31.chato.beans.Message;
+import br.edu.utfpr.daeln.csr31.chato.beans.RemoteMessage;
+import br.edu.utfpr.daeln.csr31.chato.core.Chato;
+import br.edu.utfpr.daeln.csr31.chato.interfaces.Messenger;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;

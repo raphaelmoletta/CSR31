@@ -1,8 +1,8 @@
-package br.edu.utfpr.daeln.csr31.chat4dpam5;
+package br.edu.utfpr.daeln.csr31.chato;
 
-import br.edu.utfpr.daeln.csr31.chat4dpam5.beans.Message;
-import br.edu.utfpr.daeln.csr31.chat4dpam5.datas.DataD4Pam5;
-import br.edu.utfpr.daeln.csr31.chat4dpam5.interfaces.Protocol;
+import br.edu.utfpr.daeln.csr31.chato.beans.Message;
+import br.edu.utfpr.daeln.csr31.chato.datas.DataD4Pam5;
+import br.edu.utfpr.daeln.csr31.chato.interfaces.Protocol;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Toolkit;
@@ -54,7 +54,7 @@ public class DetailsView extends javax.swing.JFrame {
 
         // OPTIONAL CUSTOMISATION COMPLETED.
 
-        // add the chart to a panel...
+        // add the chart to a panelchato.
         final ChartPanel chartPanel = new ChartPanel(chart);
         chartPanel.setDomainZoomable(true);
         chartPanel.setPreferredSize(jPanelChart.getSize());

@@ -1,7 +1,7 @@
-package br.edu.utfpr.daeln.csr31.chat4dpam5.core;
+package br.edu.utfpr.daeln.csr31.chato.core;
 
-import br.edu.utfpr.daeln.csr31.chat4dpam5.beans.ChatoParameters;
-import br.edu.utfpr.daeln.csr31.chat4dpam5.interfaces.Messenger;
+import br.edu.utfpr.daeln.csr31.chato.beans.ChatoParameters;
+import br.edu.utfpr.daeln.csr31.chato.interfaces.Messenger;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -24,7 +24,7 @@ public class ProcessDatagramPackageThread implements Runnable {
     public void run() {
         try {
             if ( InetAddress.getLocalHost().getHostAddress().equals(packet.getAddress().toString().substring(1, packet.getAddress().toString().length()))) {
-                Chato.messenger().systemMessage("ECOcococo...", Messenger.MESSAGES_TYPES.DEBUG);
+                Chato.messenger().systemMessage("ECOcococochato.", Messenger.MESSAGES_TYPES.DEBUG);
                 return;
             }
         } catch (UnknownHostException e) {

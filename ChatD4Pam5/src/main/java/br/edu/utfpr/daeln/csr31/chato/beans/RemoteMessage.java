@@ -1,4 +1,4 @@
-package br.edu.utfpr.daeln.csr31.chat4dpam5.beans;
+package br.edu.utfpr.daeln.csr31.chato.beans;
 
 /**
  *

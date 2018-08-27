@@ -1,6 +1,6 @@
-package br.edu.utfpr.daeln.csr31.chat4dpam5.datas;
+package br.edu.utfpr.daeln.csr31.chato.datas;
 
-import br.edu.utfpr.daeln.csr31.chat4dpam5.interfaces.Data;
+import br.edu.utfpr.daeln.csr31.chato.interfaces.Data;
 
 /**
  *

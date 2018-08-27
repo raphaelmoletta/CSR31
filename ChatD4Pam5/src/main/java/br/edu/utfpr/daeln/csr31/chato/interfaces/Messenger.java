@@ -1,7 +1,7 @@
-package br.edu.utfpr.daeln.csr31.chat4dpam5.interfaces;
+package br.edu.utfpr.daeln.csr31.chato.interfaces;
 
-import br.edu.utfpr.daeln.csr31.chat4dpam5.beans.Message;
-import br.edu.utfpr.daeln.csr31.chat4dpam5.beans.RemoteMessage;
+import br.edu.utfpr.daeln.csr31.chato.beans.Message;
+import br.edu.utfpr.daeln.csr31.chato.beans.RemoteMessage;
 
 /**
  *

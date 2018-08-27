@@ -1,10 +1,10 @@
-package br.edu.utfpr.daeln.csr31.chat4dpam5.core;
+package br.edu.utfpr.daeln.csr31.chato.core;
 
-import br.edu.utfpr.daeln.csr31.chat4dpam5.beans.ChatoParameters;
-import br.edu.utfpr.daeln.csr31.chat4dpam5.beans.Message;
-import br.edu.utfpr.daeln.csr31.chat4dpam5.exceptions.NoSlotException;
-import br.edu.utfpr.daeln.csr31.chat4dpam5.interfaces.Messenger;
-import br.edu.utfpr.daeln.csr31.chat4dpam5.interfaces.Protocol;
+import br.edu.utfpr.daeln.csr31.chato.beans.ChatoParameters;
+import br.edu.utfpr.daeln.csr31.chato.beans.Message;
+import br.edu.utfpr.daeln.csr31.chato.exceptions.NoSlotException;
+import br.edu.utfpr.daeln.csr31.chato.interfaces.Messenger;
+import br.edu.utfpr.daeln.csr31.chato.interfaces.Protocol;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -71,7 +71,7 @@ public class Chato {
             bytes[1] = -127;
 
             DatagramPacket dp = new DatagramPacket(bytes, bytes.length, InetAddress.getByName("255.255.255.255"), param.getPort());
-            instance.messanger.systemMessage("Sending request...", Messenger.MESSAGES_TYPES.INFO);
+            instance.messanger.systemMessage("Sending requestchato.", Messenger.MESSAGES_TYPES.INFO);
             socket.send(dp);
             socket.close();
         } catch (SocketException e) {

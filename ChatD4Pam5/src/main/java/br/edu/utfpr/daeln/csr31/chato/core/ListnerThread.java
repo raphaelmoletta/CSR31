@@ -1,7 +1,7 @@
-package br.edu.utfpr.daeln.csr31.chat4dpam5.core;
+package br.edu.utfpr.daeln.csr31.chato.core;
 
-import br.edu.utfpr.daeln.csr31.chat4dpam5.beans.ChatoParameters;
-import br.edu.utfpr.daeln.csr31.chat4dpam5.interfaces.Messenger;
+import br.edu.utfpr.daeln.csr31.chato.beans.ChatoParameters;
+import br.edu.utfpr.daeln.csr31.chato.interfaces.Messenger;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -29,7 +29,7 @@ public class ListnerThread implements Runnable {
         try {
             DatagramSocket socket = new DatagramSocket(param.getPort(), InetAddress.getByName("0.0.0.0"));
             byte[] buffer = new byte[1024];
-            Chato.messenger().systemMessage("Listening...", Messenger.MESSAGES_TYPES.DEBUG);
+            Chato.messenger().systemMessage("Listeningchato.", Messenger.MESSAGES_TYPES.DEBUG);
             socket.setSoTimeout(1000);
             while (param.isRunning()) {
                 try {

@@ -1,7 +1,7 @@
-package br.edu.utfpr.daeln.csr31.chat4dpam5.listners;
+package br.edu.utfpr.daeln.csr31.chato.listners;
 
-import br.edu.utfpr.daeln.csr31.chat4dpam5.DetailsView;
-import br.edu.utfpr.daeln.csr31.chat4dpam5.beans.Message;
+import br.edu.utfpr.daeln.csr31.chato.DetailsView;
+import br.edu.utfpr.daeln.csr31.chato.beans.Message;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 

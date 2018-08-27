@@ -1,8 +1,8 @@
-package br.edu.utfpr.daeln.csr31.chat4dpam5.beans;
+package br.edu.utfpr.daeln.csr31.chato.beans;
 
-import br.edu.utfpr.daeln.csr31.chat4dpam5.interfaces.Data;
-import br.edu.utfpr.daeln.csr31.chat4dpam5.interfaces.Protocol;
-import br.edu.utfpr.daeln.csr31.chat4dpam5.interfaces.Protocol.ENCODER;
+import br.edu.utfpr.daeln.csr31.chato.interfaces.Data;
+import br.edu.utfpr.daeln.csr31.chato.interfaces.Protocol;
+import br.edu.utfpr.daeln.csr31.chato.interfaces.Protocol.ENCODER;
 import java.time.LocalDateTime;
 
 /**
