@@ -1,6 +1,8 @@
 package br.edu.utfpr.daeln.csr31.chat4dpam5.beans;
 
 import br.edu.utfpr.daeln.csr31.chat4dpam5.interfaces.Protocol;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -11,12 +13,37 @@ public class ChatoParameters {
     private final Protocol.ENCODER encoder;
     private boolean debug;
     private int port;
+    private boolean running;
+    private boolean[] slots;
+    private Map<String,User> users;
 
     public ChatoParameters() {
         nick = "me";
         encoder = Protocol.ENCODER.D4Pam5;
-        debug = false;
+        debug = true;
         port = 6969;
+        running = true;
+        users = new HashMap<>();
+        slots = new boolean[256];
+        for(int i = 0; i < slots.length; i++) {
+            slots[i] = true;
+        }
+    }
+
+    public synchronized boolean[] getSlots() {
+        return slots;
+    }
+
+    public synchronized void setSlots(boolean[] slots) {
+        this.slots = slots;
+    }
+    
+    public synchronized boolean isRunning() {
+        return running;
+    }
+
+    public synchronized void setRunning(boolean running) {
+        this.running = running;
     }
 
     public synchronized String getNick() {
@@ -27,23 +54,32 @@ public class ChatoParameters {
         this.nick = nick;
     }
 
-    public Protocol.ENCODER getEncoder() {
+    public synchronized Protocol.ENCODER getEncoder() {
         return encoder;
     }
 
-    public boolean isDebuging() {
+    public synchronized boolean isDebuging() {
         return debug;
     }
     
-    public void setDebug(boolean debug) {
+    public synchronized void setDebug(boolean debug) {
         this.debug = debug;
     }
 
-    public int getPort() {
+    public synchronized int getPort() {
         return port;
     }
 
-    public void setPort(int port) {
+    public synchronized void setPort(int port) {
         this.port = port;
     }
+
+    public synchronized Map<String, User> getUsers() {
+        return users;
+    }
+
+    public synchronized void setUsers(Map<String, User> users) {
+        this.users = users;
+    }
+    
 }

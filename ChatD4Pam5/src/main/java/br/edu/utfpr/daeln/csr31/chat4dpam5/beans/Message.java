@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.edu.utfpr.daeln.csr31.chat4dpam5.beans;
 
 import br.edu.utfpr.daeln.csr31.chat4dpam5.interfaces.Data;
@@ -15,6 +10,7 @@ import java.time.LocalDateTime;
  * @author rapha
  */
 public class Message {
+
     private String text = "", binary = "", encoded = "";
     private ENCODER encoder = Protocol.ENCODER.D4Pam5;
     private LocalDateTime time = LocalDateTime.now();
@@ -26,12 +22,12 @@ public class Message {
 
     public void setData(Data[] data) {
         encoded = "";
-        for(Data d : data) {
+        for (Data d : data) {
             encoded += d.toString();
         }
         this.data = data;
     }
- 
+
     public ENCODER getEncoder() {
         return encoder;
     }
@@ -71,6 +67,8 @@ public class Message {
     public void setTime(LocalDateTime time) {
         this.time = time;
     }
-    
-    
+
+    public int size() {
+        return data.length;
+    }
 }

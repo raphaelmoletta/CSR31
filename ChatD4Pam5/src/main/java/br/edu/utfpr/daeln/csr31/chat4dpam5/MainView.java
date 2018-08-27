@@ -1,7 +1,6 @@
 package br.edu.utfpr.daeln.csr31.chat4dpam5;
 
 import br.edu.utfpr.daeln.csr31.chat4dpam5.listners.OpenDetails;
-import br.edu.utfpr.daeln.csr31.chat4dpam5.core.Chat;
 import br.edu.utfpr.daeln.csr31.chat4dpam5.beans.Message;
 import br.edu.utfpr.daeln.csr31.chat4dpam5.beans.RemoteMessage;
 import br.edu.utfpr.daeln.csr31.chat4dpam5.core.Chato;
@@ -23,14 +22,12 @@ public final class MainView extends javax.swing.JFrame implements Messenger {
     private static final long serialVersionUID = -6467255376560618319L;
     private int count = 0;
     private JPanel panel = null;
-    private Chat chat;
 
     /**
      * Creates new form MainView
      */
     public MainView() {
         initComponents();
-        chat = new Chat(this);
         Chato.initialize(this);
         chatPanel.setPreferredSize(new Dimension(100, 100));
         chatPanel.setAlignmentX(LEFT_ALIGNMENT);
@@ -41,7 +38,7 @@ public final class MainView extends javax.swing.JFrame implements Messenger {
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                chat.stop();
+                Chato.stop();
                 System.exit(0);
             }
         });
@@ -133,7 +130,9 @@ public final class MainView extends javax.swing.JFrame implements Messenger {
     private void send() {
         if (textSend.getText().charAt(0) == '/') {
             Chato.execute(textSend.getText());
-        } else if (chat.isConnected()) {
+        } else if (textSend.getText().length() > 250) {
+            Chato.messenger().systemMessage("Message must contain less than 250 characters.", MESSAGES_TYPES.WARN);
+        } else if (Chato.isConnected()) {
             Chato.send(textSend.getText());
         } else {
             Chato.send(textSend.getText());

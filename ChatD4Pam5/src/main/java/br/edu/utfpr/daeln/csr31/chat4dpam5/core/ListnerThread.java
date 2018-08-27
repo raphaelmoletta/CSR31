@@ -1,7 +1,7 @@
 package br.edu.utfpr.daeln.csr31.chat4dpam5.core;
 
-import br.edu.utfpr.daeln.csr31.chat4dpam5.beans.ConfigurationData;
-import br.edu.utfpr.daeln.csr31.chat4dpam5.beans.ListnerData;
+import br.edu.utfpr.daeln.csr31.chat4dpam5.beans.ChatoParameters;
+import br.edu.utfpr.daeln.csr31.chat4dpam5.interfaces.Messenger;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -15,25 +15,26 @@ import java.net.SocketTimeoutException;
  */
 public class ListnerThread implements Runnable {
 
-    private final ListnerData data;
-    private final ConfigurationData config;
+    private final ChatoParameters param;
+    private int port;
 
-    public ListnerThread(ListnerData data, ConfigurationData config) {
-        this.data = data;
-        this.config = config;
+    public ListnerThread(ChatoParameters param) {
+        this.param = param;
+        port = param.getPort();
     }
 
     @Override
     public void run() {
 
         try {
-            DatagramSocket socket = new DatagramSocket(config.getPort(),InetAddress.getByName("0.0.0.0"));
+            DatagramSocket socket = new DatagramSocket(param.getPort(),InetAddress.getByName("0.0.0.0"));
             byte[] buffer = new byte[1024];
-            while (data.keepRuning()) {
-                if(config.changedPort()) {
+            Chato.messenger().systemMessage("Listening...", Messenger.MESSAGES_TYPES.DEBUG);
+            while (param.isRunning()) {
+                if(port != param.getPort()) {
                     socket.close();
-                    socket = new DatagramSocket(config.getPort(),InetAddress.getByName("0.0.0.0"));
-                    config.removeChanged();
+                    port = param.getPort();
+                    socket = new DatagramSocket(port,InetAddress.getByName("0.0.0.0"));
                     socket.setSoTimeout(1000);
                 }
                 
@@ -41,15 +42,15 @@ public class ListnerThread implements Runnable {
                 
                 socket.receive(dp);
                 
-                config.debug("RecivedMessage\n" + new String(dp.getData()));
-                //new Thread(new ProcessDatagramPackageThread(dp, config)).start();
+                Chato.messenger().systemMessage("RecivedMessage\n" + new String(dp.getData()), Messenger.MESSAGES_TYPES.DEBUG);
+                new Thread(new ProcessDatagramPackageThread(dp, param)).start();
             }
         } catch (SocketTimeoutException ex) {
-            config.debug(ex);
+            Chato.messenger().systemMessage("Waited Exception :: Socket Timeout Exception\n", Messenger.MESSAGES_TYPES.DEBUG);
         } catch (SocketException ex) {
-            config.debug(ex);
+            Chato.messenger().systemMessage("Listner Thread :: SocketException\n" + ex.getLocalizedMessage(), Messenger.MESSAGES_TYPES.ERROR);
         } catch (IOException ex) {
-            config.debug(ex);
+            Chato.messenger().systemMessage("Listner Thread :: IOException\n" + ex.getLocalizedMessage(), Messenger.MESSAGES_TYPES.ERROR);
         }
     }
 
