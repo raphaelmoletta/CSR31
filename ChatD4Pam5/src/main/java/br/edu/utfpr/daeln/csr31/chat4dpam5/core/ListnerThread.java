@@ -27,26 +27,29 @@ public class ListnerThread implements Runnable {
     public void run() {
 
         try {
-            DatagramSocket socket = new DatagramSocket(param.getPort(),InetAddress.getByName("0.0.0.0"));
+            DatagramSocket socket = new DatagramSocket(param.getPort(), InetAddress.getByName("0.0.0.0"));
             byte[] buffer = new byte[1024];
             Chato.messenger().systemMessage("Listening...", Messenger.MESSAGES_TYPES.DEBUG);
+            socket.setSoTimeout(1000);
             while (param.isRunning()) {
-                if(port != param.getPort()) {
-                    socket.close();
-                    port = param.getPort();
-                    socket = new DatagramSocket(port,InetAddress.getByName("0.0.0.0"));
-                    socket.setSoTimeout(1000);
+                try {
+                    if (port != param.getPort()) {
+                        socket.close();
+                        port = param.getPort();
+                        socket = new DatagramSocket(port, InetAddress.getByName("0.0.0.0"));
+                        socket.setSoTimeout(1000);
+                    }
+
+                    DatagramPacket dp = new DatagramPacket(buffer, buffer.length);
+
+                    socket.receive(dp);
+
+                    Chato.messenger().systemMessage("RecivedMessage\n" + new String(dp.getData()), Messenger.MESSAGES_TYPES.DEBUG);
+                    new Thread(new ProcessDatagramPackageThread(dp, param)).start();
+                } catch (SocketTimeoutException ex) {
+                    Chato.messenger().systemMessage("Waited Exception :: Socket Timeout Exception\n", Messenger.MESSAGES_TYPES.DEBUG);
                 }
-                
-                DatagramPacket dp = new DatagramPacket(buffer, buffer.length);
-                
-                socket.receive(dp);
-                
-                Chato.messenger().systemMessage("RecivedMessage\n" + new String(dp.getData()), Messenger.MESSAGES_TYPES.DEBUG);
-                new Thread(new ProcessDatagramPackageThread(dp, param)).start();
             }
-        } catch (SocketTimeoutException ex) {
-            Chato.messenger().systemMessage("Waited Exception :: Socket Timeout Exception\n", Messenger.MESSAGES_TYPES.DEBUG);
         } catch (SocketException ex) {
             Chato.messenger().systemMessage("Listner Thread :: SocketException\n" + ex.getLocalizedMessage(), Messenger.MESSAGES_TYPES.ERROR);
         } catch (IOException ex) {

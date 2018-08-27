@@ -62,14 +62,14 @@ public class Chato {
 
     public synchronized void search() {
 
-        try (DatagramSocket socket = new DatagramSocket(param.getPort() + 1, InetAddress.getByName("0.0.0.0"))) {
+        try (DatagramSocket socket = new DatagramSocket(param.getPort() + 1, InetAddress.getByName("255.255.255.255"))) {
             socket.setBroadcast(true);
             //[code][slot][reserved][reserved][reserved][message 250]
             byte[] bytes = new byte[256];
             bytes[0] = 1;
             bytes[1] = -127;
 
-            DatagramPacket dp = new DatagramPacket(bytes, bytes.length, InetAddress.getByName("0.0.0.0"), param.getPort());
+            DatagramPacket dp = new DatagramPacket(bytes, bytes.length, InetAddress.getByName("255.255.255.255"), param.getPort());
             socket.send(dp);
         } catch (SocketException e) {
         } catch (IOException ex) {

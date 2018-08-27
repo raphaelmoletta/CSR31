@@ -20,6 +20,7 @@ import javax.swing.border.LineBorder;
 public final class MainView extends javax.swing.JFrame implements Messenger {
 
     private static final long serialVersionUID = -6467255376560618319L;
+    private String lastSystemMessage = "";
     private int count = 0;
     private JPanel panel = null;
 
@@ -143,6 +144,10 @@ public final class MainView extends javax.swing.JFrame implements Messenger {
 
     @Override
     public void systemMessage(String message, MESSAGES_TYPES type) {
+        if(lastSystemMessage.equals(message)) {
+            return;
+        }
+        lastSystemMessage = message;
         JLabel label = new JLabel("[" + type.name() + "] " + message);
 
         switch (type) {
