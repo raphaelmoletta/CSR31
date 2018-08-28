@@ -11,6 +11,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.nio.charset.Charset;
+import java.util.Locale;
 
 /**
  *
@@ -24,8 +26,20 @@ public class Chato {
     private Thread listnerThread;
     private static Chato instance = null;
 
+    /**
+     * Commands
+     */
     public static enum Commands {
-        PING, PONG
+
+        /**
+         * PING
+         */
+        PING,
+
+        /**
+         * PONG
+         */
+        PONG
     };
 
     private Chato(Messenger messanger) {
@@ -34,12 +48,20 @@ public class Chato {
         seq = 0;
     }
 
+    /**
+     *
+     * @param messanger
+     */
     public static void initialize(Messenger messanger) {
         instance = new Chato(messanger);
         instance.listnerThread = new Thread(new ListnerThread(instance.param));
         instance.listnerThread.start();
     }
 
+    /**
+     *
+     * @param m
+     */
     public synchronized void send(Message m) {
         instance.param.getUsers().values().forEach((user) -> {
             try {
@@ -55,16 +77,27 @@ public class Chato {
                 DatagramPacket dp = new DatagramPacket(bytes, m.size(), user.getInetAddress(), param.getPort());
                 socket.send(dp);
             } catch (SocketException e) {
+                instance.messanger.systemMessage("SocketException :: send :: " + e.toString(), Messenger.MESSAGES_TYPES.DEBUG);
             } catch (IOException ex) {
+                instance.messanger.systemMessage("IOException :: send :: " + ex.toString(), Messenger.MESSAGES_TYPES.DEBUG);
             } catch (NoSlotException ex) {
+                instance.messanger.systemMessage("NoSlotException :: send :: " + ex.toString(), Messenger.MESSAGES_TYPES.DEBUG);
             }
         });
     }
 
+    /**
+     *
+     * @param command
+     */
     public static synchronized void send(Commands command) {
         instance.sendInternal(command);
     }
 
+    /**
+     *
+     * @param command
+     */
     public synchronized void sendInternal(Commands command) {
         //[code][slot][reserved][reserved][reserved][message 250]
         try (DatagramSocket socket = new DatagramSocket(param.getPort() + 1, InetAddress.getByName("0.0.0.0"))) {
@@ -78,7 +111,7 @@ public class Chato {
                     bytes[0] = 1;
                     bytes[1] = -127;
                     nick = "\n" + param.getNick() + "\n";
-                    System.arraycopy(nick.getBytes(), 0, bytes, 2, nick.getBytes().length);
+                    System.arraycopy(nick.getBytes(Charset.forName("UTF-8")), 0, bytes, 2, nick.getBytes(Charset.forName("UTF-8")).length);
                     dp = new DatagramPacket(bytes, bytes.length, InetAddress.getByName("255.255.255.255"), param.getPort());
                     socket.send(dp);
                     break;
@@ -86,7 +119,7 @@ public class Chato {
                     bytes[0] = 2;
                     bytes[1] = -127;
                     nick = "\n" + param.getNick() + "\n";
-                    System.arraycopy(nick.getBytes(), 0, bytes, 2, nick.getBytes().length);
+                    System.arraycopy(nick.getBytes(Charset.forName("UTF-8")), 0, bytes, 2, nick.getBytes(Charset.forName("UTF-8")).length);
                     for(User u : param.getUsers().values()) {
                         dp = new DatagramPacket(bytes, bytes.length, u.getInetAddress(), param.getPort());
                         socket.send(dp);
@@ -97,12 +130,17 @@ public class Chato {
             
             socket.close();
         } catch (SocketException e) {
-            System.out.println(e.toString());
+            instance.messanger.systemMessage("SocketException :: SendInternal :: " + e.toString(), Messenger.MESSAGES_TYPES.DEBUG);
         } catch (IOException ex) {
-            System.out.println(ex.toString());
+            instance.messanger.systemMessage("IOException :: SendInternal :: " + ex.toString(), Messenger.MESSAGES_TYPES.DEBUG);
         }
     }
 
+    /**
+     *
+     * @return
+     * @throws NoSlotException
+     */
     public byte getSlot() throws NoSlotException {
         if (seq == 256) {
             seq = 0;
@@ -123,6 +161,10 @@ public class Chato {
         }
     }
 
+    /**
+     *
+     * @param message
+     */
     public synchronized static void send(String message) {
         Message m = new Message();
         m.setEncoder(instance.param.getEncoder());
@@ -133,10 +175,14 @@ public class Chato {
         Chato.messenger().userMessage(m);
     }
 
+    /**
+     *
+     * @param command
+     */
     public static void execute(String command) {
         String parts[] = command.trim().split(" ");
         Chato.messenger().systemMessage("Execute command: " + parts[0], Messenger.MESSAGES_TYPES.INFO);
-        if ("/nick".equals(parts[0].trim().toLowerCase())) {
+        if ("/nick".equals(parts[0].trim().toLowerCase(Locale.ENGLISH))) {
             if (parts.length >= 2) {
                 instance.param.setNick(parts[1]);
                 if (parts[1].length() > 15) {
@@ -152,7 +198,7 @@ public class Chato {
 
         }
         for (int i = 0; i < parts.length; i++) {
-            parts[i] = parts[i].trim().toLowerCase();
+            parts[i] = parts[i].trim().toLowerCase(Locale.ENGLISH);
         }
 
         switch (parts[0]) {
@@ -160,7 +206,7 @@ public class Chato {
                 if (parts.length > 1) {
                     if("users".equals(parts[1])) {
                         instance.param.getUsers().values().forEach((user) -> {
-                            Chato.messenger().systemMessage(user.getNick() + user.getInetAddress().toString(), Messenger.MESSAGES_TYPES.INFO);
+                            Chato.messenger().systemMessage(user.getNick() + user.getInetAddress().toString().replace("/","@"), Messenger.MESSAGES_TYPES.INFO);
                         });
                     }
                 } else {
@@ -189,6 +235,7 @@ public class Chato {
                                 Chato.messenger().systemMessage("Missing port number parameter", Messenger.MESSAGES_TYPES.WARN);
                             }
                             break;
+                        default:
                     }
                 } else {
                     Chato.messenger().systemMessage("Command syntax: /server <subcommand>", Messenger.MESSAGES_TYPES.HELP);
@@ -205,28 +252,51 @@ public class Chato {
         }
     }
 
+    /**
+     *
+     * @param user
+     */
     public synchronized static void add(User user) {
         if (!instance.param.getUsers().containsKey(user.getInetAddress().toString())) {
             instance.param.getUsers().put(user.getInetAddress().toString(), user);
         }
     }
 
+    /**
+     * stop
+     */
     public synchronized static void stop() {
         instance.param.setRunning(false);
     }
 
+    /**
+     *
+     * @return
+     */
     public synchronized static Messenger messenger() {
         return instance.messanger;
     }
 
+    /**
+     *
+     * @return
+     */
     public synchronized static boolean isDebuging() {
         return instance.param.isDebuging();
     }
 
+    /**
+     *
+     * @return
+     */
     public static boolean isConnected() {
         return instance.param.getUsers().size() > 0;
     }
 
+    /**
+     *
+     * @return
+     */
     public synchronized static String getNick() {
         return instance.param.getNick();
     }

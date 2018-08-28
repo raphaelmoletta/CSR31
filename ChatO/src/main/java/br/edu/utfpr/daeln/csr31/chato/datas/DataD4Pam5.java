@@ -9,14 +9,25 @@ import br.edu.utfpr.daeln.csr31.chato.interfaces.Data;
 public class DataD4Pam5 implements Data {
     private byte[] data;
 
+    /**
+     * DataD4Pam5
+     */
     public DataD4Pam5() {
         data = new byte[4];
     }
     
+    /**
+     *
+     * @return
+     */
     public byte[] getData() {
         return data;
     }
 
+    /**
+     *
+     * @param data
+     */
     public void setData(byte[] data) {
         this.data = data;
     }

@@ -17,6 +17,9 @@ public class ChatoParameters {
     private boolean[] slots;
     private Map<String,User> users;
 
+    /**
+     * ChatoParameters
+     */
     public ChatoParameters() {
         nick = "me";
         encoder = Protocol.ENCODER.D4Pam5;
@@ -30,54 +33,106 @@ public class ChatoParameters {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public synchronized boolean[] getSlots() {
         return slots;
     }
 
+    /**
+     *
+     * @param slots
+     */
     public synchronized void setSlots(boolean[] slots) {
         this.slots = slots;
     }
     
+    /**
+     *
+     * @return
+     */
     public synchronized boolean isRunning() {
         return running;
     }
 
+    /**
+     *
+     * @param running
+     */
     public synchronized void setRunning(boolean running) {
         this.running = running;
     }
 
+    /**
+     *
+     * @return
+     */
     public synchronized String getNick() {
         return nick;
     }
 
+    /**
+     *
+     * @param nick
+     */
     public synchronized void setNick(String nick) {
         this.nick = nick;
     }
 
+    /**
+     *
+     * @return
+     */
     public synchronized Protocol.ENCODER getEncoder() {
         return encoder;
     }
 
+    /**
+     *
+     * @return
+     */
     public synchronized boolean isDebuging() {
         return debug;
     }
     
+    /**
+     *
+     * @param debug
+     */
     public synchronized void setDebug(boolean debug) {
         this.debug = debug;
     }
 
+    /**
+     *
+     * @return
+     */
     public synchronized int getPort() {
         return port;
     }
 
+    /**
+     *
+     * @param port
+     */
     public synchronized void setPort(int port) {
         this.port = port;
     }
 
+    /**
+     *
+     * @return
+     */
     public synchronized Map<String, User> getUsers() {
         return users;
     }
 
+    /**
+     *
+     * @param users
+     */
     public synchronized void setUsers(Map<String, User> users) {
         this.users = users;
     }

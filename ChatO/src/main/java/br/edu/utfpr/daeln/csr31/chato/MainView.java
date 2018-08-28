@@ -1,10 +1,10 @@
 package br.edu.utfpr.daeln.csr31.chato;
 
-import br.edu.utfpr.daeln.csr31.chato.listners.OpenDetails;
 import br.edu.utfpr.daeln.csr31.chato.beans.Message;
 import br.edu.utfpr.daeln.csr31.chato.beans.RemoteMessage;
 import br.edu.utfpr.daeln.csr31.chato.core.Chato;
 import br.edu.utfpr.daeln.csr31.chato.interfaces.Messenger;
+import br.edu.utfpr.daeln.csr31.chato.listners.OpenDetails;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -29,6 +29,22 @@ public final class MainView extends javax.swing.JFrame implements Messenger {
      */
     public MainView() {
         initComponents();
+        initialize();
+    }
+    
+    
+    static class WindowClosingAdapter extends java.awt.event.WindowAdapter {
+        @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                Chato.stop();
+                System.exit(0);
+            }
+    }
+    
+    /**
+     * Initialize
+     */
+    public void initialize() {
         Chato.initialize(this);
         chatPanel.setPreferredSize(new Dimension(100, 100));
         chatPanel.setAlignmentX(LEFT_ALIGNMENT);
@@ -36,18 +52,11 @@ public final class MainView extends javax.swing.JFrame implements Messenger {
         panel.setBackground(Color.WHITE);
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 
-        this.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                Chato.stop();
-                System.exit(0);
-            }
-        });
+        this.addWindowListener(new WindowClosingAdapter());
 
         this.chatPanel.setViewportBorder(new LineBorder(Color.BLACK));
         this.setTitle("ChatO");
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource("logo.png")));
-
     }
 
     /**
@@ -142,6 +151,11 @@ public final class MainView extends javax.swing.JFrame implements Messenger {
         textSend.setText("");
     }
 
+    /**
+     *
+     * @param message
+     * @param type
+     */
     @Override
     public void systemMessage(String message, MESSAGES_TYPES type) {
         if(lastSystemMessage.equals(message)) {
@@ -174,6 +188,10 @@ public final class MainView extends javax.swing.JFrame implements Messenger {
         addLabel(label);
     }
 
+    /**
+     *
+     * @param message
+     */
     @Override
     public void remoteUserMessage(RemoteMessage message) {
         JLabel label = new JLabel(message.getUsername() + " - " + message.getTime().getHour() + ":" + message.getTime().getMinute() + "> " + message.getText());
@@ -182,6 +200,10 @@ public final class MainView extends javax.swing.JFrame implements Messenger {
         addLabel(label);
     }
 
+    /**
+     *
+     * @param message
+     */
     @Override
     public void userMessage(Message message) {
         JLabel label = new JLabel(Chato.getNick() + " - " + message.getTime().getHour() + ":" + message.getTime().getMinute() + "> " + message.getText());
@@ -208,10 +230,8 @@ public final class MainView extends javax.swing.JFrame implements Messenger {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MainView().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new MainView().setVisible(true);
         });
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -221,13 +241,13 @@ public final class MainView extends javax.swing.JFrame implements Messenger {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            Chato.messenger().systemMessage("ClassNotFoundException :: main", MESSAGES_TYPES.DEBUG);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            Chato.messenger().systemMessage("InstantiationException :: main", MESSAGES_TYPES.DEBUG);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            Chato.messenger().systemMessage("IllegalAccessException :: main", MESSAGES_TYPES.DEBUG);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            Chato.messenger().systemMessage("UnsupportedLookAndFeelException :: main", MESSAGES_TYPES.DEBUG);
         }
         //</editor-fold>
 

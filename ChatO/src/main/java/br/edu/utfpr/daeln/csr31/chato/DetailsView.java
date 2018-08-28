@@ -181,7 +181,7 @@ public class DetailsView extends javax.swing.JFrame {
             for (int i = 0; i < message.getData().length; i++) {
                 byte[] bytes = ((DataD4Pam5) message.getData()[i]).getData();
                 for (int j = 0; j < bytes.length; j++) {
-                    dataset.addValue(bytes[j], new Integer(j), new Integer(i));
+                    dataset.addValue(bytes[j], Integer.valueOf(j), Integer.valueOf(i));
                 }
             }
         }

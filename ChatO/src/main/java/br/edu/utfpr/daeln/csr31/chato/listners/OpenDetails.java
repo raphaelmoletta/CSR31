@@ -13,36 +13,58 @@ public class OpenDetails implements MouseListener {
 
     private final Message message;
 
+    /**
+     *
+     * @param message
+     */
     public OpenDetails(Message message) {
         this.message = message;
     }
 
+    /**
+     *
+     * @param me
+     */
     @Override
     public void mouseClicked(MouseEvent me) {
         if (me.getClickCount() == 2 && me.getButton() == 1) {
             DetailsView details = new DetailsView(message);
             details.setVisible(true);
             details.setTitle("Message Details");
-            System.out.println("Double Click: " + me.paramString());
-
         }
     }
 
+    /**
+     *
+     * @param me
+     */
     @Override
     public void mousePressed(MouseEvent me) {
 
     }
 
+    /**
+     *
+     * @param me
+     */
     @Override
     public void mouseReleased(MouseEvent me) {
 
     }
 
+    /**
+     *
+     * @param me
+     */
     @Override
     public void mouseEntered(MouseEvent me) {
 
     }
 
+    /**
+     *
+     * @param me
+     */
     @Override
     public void mouseExited(MouseEvent me) {
 

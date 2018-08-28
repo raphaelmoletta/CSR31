@@ -8,6 +8,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.nio.charset.Charset;
 
 /**
  *
@@ -18,11 +19,18 @@ public class ListnerThread implements Runnable {
     private final ChatoParameters param;
     private int port;
 
+    /**
+     *
+     * @param param
+     */
     public ListnerThread(ChatoParameters param) {
         this.param = param;
         port = param.getPort();
     }
 
+    /**
+     * run
+     */
     @Override
     public void run() {
 
@@ -44,7 +52,7 @@ public class ListnerThread implements Runnable {
 
                     socket.receive(dp);
 
-                    Chato.messenger().systemMessage("RecivedMessage: " + new String(dp.getData()), Messenger.MESSAGES_TYPES.DEBUG);
+                    Chato.messenger().systemMessage("RecivedMessage: " + new String(dp.getData(), Charset.forName("UTF-8")), Messenger.MESSAGES_TYPES.DEBUG);
                     new Thread(new ProcessDatagramPackageThread(dp, param)).start();
                 } catch (SocketTimeoutException ex) {
                     Chato.messenger().systemMessage("Waited Exception :: Socket Timeout Exception\n", Messenger.MESSAGES_TYPES.DEBUG);

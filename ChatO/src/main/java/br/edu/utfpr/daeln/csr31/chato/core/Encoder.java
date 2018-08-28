@@ -10,30 +10,46 @@ package br.edu.utfpr.daeln.csr31.chato.core;
  * @author rapha
  */
 public class Encoder {
+
+    /**
+     *
+     * @param message
+     * @return
+     */
     public static String toBinary(String message) {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         for(char c : message.toCharArray()) {
-            result += toBinary(c);
+            result.append(toBinary(c));
         }
-        return result;
+        return result.toString();
     }
     
+    /**
+     *
+     * @param c
+     * @return
+     */
     public static String toBinary(char c) {
         int b = (int) c;
         int count = 1;
-        String result = "";
+        StringBuilder result = new StringBuilder();
         for(int i = 7; i >= 0; i--) {
             int factor = (int) Math.pow(2,i);
             if(b >= factor) {
-                result += "1";
+                result.append("1");
                 b -= factor;
             } else {
-                result += "0";
+                result.append("0");
             }
         }
-        return result;
+        return result.toString();
     }
     
+    /**
+     *
+     * @param binaryMessage
+     * @return
+     */
     public static String toString(String binaryMessage) {
         String result = "";
         if(binaryMessage.length() % 8 == 0) {
@@ -56,6 +72,11 @@ public class Encoder {
         return result;
     }
     
+    /**
+     *
+     * @param byteMsg
+     * @return
+     */
     public static char toChar(String byteMsg) {
         if(byteMsg.length() == 8) {
             int result = 0;
